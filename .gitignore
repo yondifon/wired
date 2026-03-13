@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+bun.lock
+vendor/
+composer.lock
+
+# Build output
+.dist/
+
+# Development
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+logs/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Bun
+bun.lockb

@@ -1,0 +1,29 @@
+{
+  "name": "malico/wired",
+  "description": "Livewire utilities and macros for streamlined component development",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Malico",
+      "email": "yong@malico.me"
+    }
+  ],
+  "require": {
+    "php": "^8.2",
+    "illuminate/view": "^11.0|^12.0|^13.0",
+    "illuminate/support": "^11.0|^12.0|^13.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Malico\\Wired\\": "src/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Malico\\Wired\\WiredServiceProvider"
+      ]
+    }
+  }
+}

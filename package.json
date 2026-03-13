@@ -1,0 +1,18 @@
+{
+  "name": "malico/wired",
+  "version": "0.1.0",
+  "description": "Livewire utilities and macros for streamlined component development",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "vite build",
+    "watch": "vite build --watch"
+  },
+  "keywords": ["livewire", "alpine", "directives"],
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "vite": "^5.1.0"
+  }
+}
