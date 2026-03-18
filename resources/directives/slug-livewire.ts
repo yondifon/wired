@@ -16,7 +16,7 @@ export function registerSlugLivewire(Livewire: any) {
         let lastExpectedSlug = ''
 
         const getCurrentSlug = () =>
-            toSlug(sourceFields.map((f: string) => component.$wire[f]).filter(Boolean).join(' '))
+            toSlug(sourceFields.map((f: string) => component.$wire.get(f)).filter(Boolean).join(' '))
 
         const initialSlug = getCurrentSlug()
         if (!inputEl.value && initialSlug) {

@@ -155,7 +155,7 @@ function q(a) {
   a.directive("slug", ({ el: c, directive: g, component: h, cleanup: x }) => {
     const l = g.modifiers.length > 0 ? g.modifiers[0] : "-", f = g.expression.trim().split(",").map((o) => o.trim()), e = c, t = (o) => o.toString().toLowerCase().trim().replace(/[\s\W-]+/g, l).replace(new RegExp(`^${l}+|${l}+$`, "g"), "").replace(new RegExp(`${l}{2,}`, "g"), l);
     let b = "";
-    const E = () => t(f.map((o) => h.$wire[o]).filter(Boolean).join(" ")), L = E();
+    const E = () => t(f.map((o) => h.$wire.get(o)).filter(Boolean).join(" ")), L = E();
     !e.value && L && (b = L, e.value = b, e.dispatchEvent(new Event("input", { bubbles: !0 })));
     const S = f.map(
       (o) => h.$wire.$watch(o, () => {
@@ -259,7 +259,7 @@ function H(a) {
       }
     };
     let u = "";
-    const o = () => S(e.map((r) => h.$wire[r]).filter(Boolean).join(" ")), w = o();
+    const o = () => S(e.map((r) => h.$wire.get(r)).filter(Boolean).join(" ")), w = o();
     !t.value && w && (u = w, t.value = u, t.dispatchEvent(new Event("input", { bubbles: !0 })));
     const p = e.map(
       (r) => h.$wire.$watch(r, () => {

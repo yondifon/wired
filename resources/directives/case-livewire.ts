@@ -47,7 +47,7 @@ export function registerCaseLivewire(Livewire: any) {
         let lastExpectedValue = ''
 
         const getCurrentValue = () =>
-            toCase(sourceFields.map((f: string) => component.$wire[f]).filter(Boolean).join(' '))
+            toCase(sourceFields.map((f: string) => component.$wire.get(f)).filter(Boolean).join(' '))
 
         const initialValue = getCurrentValue()
         if (!inputEl.value && initialValue) {
