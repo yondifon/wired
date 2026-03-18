@@ -1,10 +1,8 @@
 export function registerSlugLivewire(Livewire: any) {
-    Livewire.directive('slug', ({ el, directive, cleanup }: any) => {
+    Livewire.directive('slug', ({ el, directive, component, cleanup }: any) => {
         const separator = directive.modifiers.length > 0 ? directive.modifiers[0] : '-'
-        const sourceField = directive.expression.replace(/['"]/g, '').trim()
-
-        const findSourceElement = (): HTMLInputElement | null =>
-            document.querySelector(`[wire\\:model="${sourceField}"]`)
+        const sourceFields = directive.expression.trim().split(',').map((f: string) => f.trim())
+        const inputEl = el as HTMLInputElement
 
         const toSlug = (text: string): string =>
             text
@@ -15,34 +13,29 @@ export function registerSlugLivewire(Livewire: any) {
                 .replace(new RegExp(`^${separator}+|${separator}+$`, 'g'), '')
                 .replace(new RegExp(`${separator}{2,}`, 'g'), separator)
 
-        const updateSlug = () => {
-            const sourceEl = findSourceElement()
-            if (!sourceEl) return
+        let lastExpectedSlug = ''
 
-            const sourceValue = sourceEl.value
-            const inputEl = el as HTMLInputElement
-            const currentSlug = inputEl.value
-            const expectedSlug = toSlug(sourceValue)
+        const getCurrentSlug = () =>
+            toSlug(sourceFields.map((f: string) => component.$wire[f]).filter(Boolean).join(' '))
 
-            if (!currentSlug || currentSlug === toSlug(sourceEl.dataset.lastSourceValue || '')) {
-                inputEl.value = expectedSlug
+        const initialSlug = getCurrentSlug()
+        if (!inputEl.value && initialSlug) {
+            lastExpectedSlug = initialSlug
+            inputEl.value = lastExpectedSlug
+            inputEl.dispatchEvent(new Event('input', { bubbles: true }))
+        }
+
+        const stopWatches = sourceFields.map((field: string) =>
+            component.$wire.$watch(field, () => {
+                const shouldUpdate = !inputEl.value || inputEl.value === lastExpectedSlug
+                if (!shouldUpdate) return
+                lastExpectedSlug = getCurrentSlug()
+                inputEl.value = lastExpectedSlug
                 inputEl.dispatchEvent(new Event('input', { bubbles: true }))
-            }
-
-            sourceEl.dataset.lastSourceValue = sourceValue
-        }
-
-        const handleSourceInput = () => setTimeout(updateSlug, 0)
-
-        const sourceEl = findSourceElement()
-        if (sourceEl) {
-            sourceEl.addEventListener('input', handleSourceInput)
-            const inputEl = el as HTMLInputElement
-            if (!inputEl.value && sourceEl.value) updateSlug()
-        }
+            })
+        )
 
         const handleManualInput = () => {
-            const inputEl = el as HTMLInputElement
             const cursorPos = inputEl.selectionStart ?? 0
             const currentValue = inputEl.value
             const slugified = toSlug(currentValue)
@@ -54,11 +47,10 @@ export function registerSlugLivewire(Livewire: any) {
             }
         }
 
-        const inputEl = el as HTMLInputElement
         inputEl.addEventListener('blur', handleManualInput)
 
         cleanup(() => {
-            if (sourceEl) sourceEl.removeEventListener('input', handleSourceInput)
+            stopWatches.forEach((stop: Function) => stop())
             inputEl.removeEventListener('blur', handleManualInput)
         })
     })
