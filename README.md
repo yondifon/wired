@@ -4,24 +4,8 @@ Alpine and Livewire directives for common input behaviors — slugs, case transf
 
 ## Installation
 
-Add to `composer.json`:
-
-```json
-{
-  "repositories": [
-    {
-      "type": "path",
-      "url": "../tinkerbin/wired"
-    }
-  ],
-  "require": {
-    "malico/wired": "dev-main"
-  }
-}
-```
-
 ```bash
-composer install
+composer require malico/wired
 ```
 
 Register in `resources/js/app.js`:
