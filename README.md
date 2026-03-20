@@ -183,6 +183,36 @@ Validates email input against two formats: a plain address (`user@example.com`) 
 
 ---
 
+### `wire:after`
+
+Runs a JS expression after a Livewire action completes. Useful for closing modals, resetting UI state, or dispatching events after form submissions.
+
+**Default (onSuccess)** — runs after the server confirms success, skips on validation errors:
+
+```html
+<form wire:submit="save" wire:after.save="$flux.modal('confirm').close()">
+```
+
+**With `.finish` modifier** — runs after DOM morph completes (regardless of validation):
+
+```html
+<form wire:submit="save" wire:after.save.finish="$flux.modal('confirm').close()">
+```
+
+The first modifier is the action name. The expression evaluates in Alpine scope, so `$flux`, `$dispatch`, `$refs` etc. all work.
+
+**Confirmation modal example:**
+
+```blade
+<flux:button
+    type="submit"
+    variant="danger"
+    wire:after.save="$flux.modal('confirm').close()"
+>{{ __('Confirm') }}</flux:button>
+```
+
+---
+
 ## PHP Macros
 
 ### `$attributes->for(prefix)`

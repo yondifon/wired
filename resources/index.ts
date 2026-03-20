@@ -4,6 +4,7 @@ import { registerSlugAlpine } from './directives/slug-alpine'
 import { registerSlugLivewire } from './directives/slug-livewire'
 import { registerCaseAlpine } from './directives/case-alpine'
 import { registerCaseLivewire } from './directives/case-livewire'
+import { registerAfterLivewire } from './directives/after-livewire'
 
 /**
  * Register all Wired directives
@@ -25,7 +26,8 @@ export function registerDirectives(Livewire: any, Alpine: any) {
     // Livewire directives
     registerSlugLivewire(Livewire)
     registerCaseLivewire(Livewire)
+    registerAfterLivewire(Livewire, Alpine)
 }
 
 // Individual exports for selective registration
-export { registerPlaceholders, registerEmailMask, registerSlugAlpine, registerSlugLivewire, registerCaseAlpine, registerCaseLivewire }
+export { registerPlaceholders, registerEmailMask, registerSlugAlpine, registerSlugLivewire, registerCaseAlpine, registerCaseLivewire, registerAfterLivewire }
