@@ -8,8 +8,9 @@ export function registerAfterLivewire(Livewire: any, Alpine: any) {
 
         let removed = false
 
-        component.$wire.intercept(actionName, ({ onSuccess, onFinish }: any) => {
+        component.$wire.intercept(({ action, onSuccess, onFinish }: any) => {
             if (removed) return
+            if (action.name !== actionName) return
 
             const hook = useFinish ? onFinish : onSuccess
 
