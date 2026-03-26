@@ -1,27 +1,32 @@
+function inferActionName(el: Element): string {
+  for (const { name, value } of Array.from(el.attributes)) {
+    if (/^wire:(click|submit|keydown|keyup|change|input)/.test(name)) {
+      return value.replace(/\(.*$/, "").trim();
+    }
+  }
+  return "";
+}
+
 export function registerAfterLivewire(Livewire: any, Alpine: any) {
   Livewire.directive("after", ({ el, directive, component, cleanup }: any) => {
-    const actionName = directive.modifiers[0];
-    if (!actionName) return;
-
     const useFinish = directive.modifiers.includes("finish");
-    const expression = directive.expression;
+    const raw = directive.expression.trim();
 
-    let removed = false;
+    const commaIndex = raw.indexOf(",");
+    const actionName = commaIndex !== -1
+      ? raw.slice(0, commaIndex).trim()
+      : inferActionName(el);
+    const expression = commaIndex !== -1
+      ? raw.slice(commaIndex + 1).trim()
+      : raw;
 
-    component.$wire.intercept(({ action, onSuccess, onFinish }: any) => {
-      if (removed) return;
-      if (action.name !== actionName) return;
+    if (!actionName || !expression) return;
 
+    const unsubscribe = component.$wire.intercept(actionName, ({ onSuccess, onFinish }: any) => {
       const hook = useFinish ? onFinish : onSuccess;
-
-      hook(() => {
-        if (removed) return;
-        Alpine.evaluate(el, expression);
-      });
+      hook(() => Alpine.evaluate(el, expression));
     });
 
-    cleanup(() => {
-      removed = true;
-    });
+    cleanup(unsubscribe);
   });
 }

@@ -1,6 +1,6 @@
 # Wired
 
-Alpine and Livewire directives for common input behaviors — slugs, case transforms, email masks, and placeholders.
+Alpine and Livewire directives for common input behaviors — slugs, case transforms, email masks, placeholders, and action callbacks.
 
 ## Installation
 
@@ -171,19 +171,33 @@ Validates email input against two formats: a plain address (`user@example.com`) 
 
 Runs a JS expression after a Livewire action completes. Useful for closing modals, resetting UI state, or dispatching events after form submissions.
 
-**Default (onSuccess)** — runs after the server confirms success, skips on validation errors:
+The expression evaluates in Alpine scope, so `$flux`, `$dispatch`, `$refs`, etc. all work.
+
+**Inferred action** — when the element also has `wire:click` or `wire:submit`, the action name is picked up automatically:
 
 ```html
-<form wire:submit="save" wire:after.save="$flux.modal('confirm').close()">
+<button wire:click="saveSettings" wire:after="$dispatch('saved')">Save</button>
+
+<form wire:submit="save" wire:after="open = false">
 ```
 
-**With `.finish` modifier** — runs after DOM morph completes (regardless of validation):
+**Explicit action name** — pass the action name as the first argument when you need to be specific:
 
 ```html
-<form wire:submit="save" wire:after.save.finish="$flux.modal('confirm').close()">
+<button wire:after="saveSettings, $dispatch('saved')">Save</button>
 ```
 
-The first modifier is the action name. The expression evaluates in Alpine scope, so `$flux`, `$dispatch`, `$refs` etc. all work.
+This also handles actions with arguments in the expression:
+
+```html
+<button wire:after="save, $dispatch('post-created', { id: postId })">Save</button>
+```
+
+**`.finish` modifier** — by default the expression runs on `onSuccess` (after the server responds, before DOM morph). Add `.finish` to run after the DOM has fully updated:
+
+```html
+<form wire:submit="save" wire:after.finish="$flux.modal('confirm').close()">
+```
 
 **Confirmation modal example:**
 
@@ -191,7 +205,7 @@ The first modifier is the action name. The expression evaluates in Alpine scope,
 <flux:button
     type="submit"
     variant="danger"
-    wire:after.save="$flux.modal('confirm').close()"
+    wire:after="$flux.modal('confirm').close()"
 >{{ __('Confirm') }}</flux:button>
 ```
 
