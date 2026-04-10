@@ -1,4 +1,5 @@
 import { registerPlaceholders } from './directives/placeholders'
+import { registerPlaceholdersLivewire } from './directives/placeholders-livewire'
 import { registerEmailMask } from './directives/email-mask'
 import { registerSlugAlpine } from './directives/slug-alpine'
 import { registerSlugLivewire } from './directives/slug-livewire'
@@ -28,10 +29,11 @@ export function registerDirectives(Livewire: any, Alpine: any) {
     registerVault(Alpine)
 
     // Livewire directives
+    registerPlaceholdersLivewire(Livewire)
     registerSlugLivewire(Livewire)
     registerCaseLivewire(Livewire)
     registerAfterLivewire(Livewire, Alpine)
 }
 
 // Individual exports for selective registration
-export { registerPlaceholders, registerEmailMask, registerSlugAlpine, registerSlugLivewire, registerCaseAlpine, registerCaseLivewire, registerAfterLivewire, registerMemo, registerVault }
+export { registerPlaceholders, registerPlaceholdersLivewire, registerEmailMask, registerSlugAlpine, registerSlugLivewire, registerCaseAlpine, registerCaseLivewire, registerAfterLivewire, registerMemo, registerVault }

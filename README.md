@@ -149,10 +149,50 @@ public string $className = '';
 
 ### `x-placeholders`
 
-Autocomplete for `{token}` placeholders inside a textarea. Type `{` to trigger. `ESC` to dismiss.
+Autocomplete for placeholders inside a textarea or input. Type the trigger character to open the menu. `ESC` to dismiss.
 
 ```html
+<!-- inline list -->
 <textarea x-placeholders="name, email, company"></textarea>
+
+<!-- Alpine data property (array) -->
+<div x-data="{ tokens: ['name', 'email', 'company'] }">
+    <textarea x-placeholders="tokens"></textarea>
+</div>
+```
+
+#### Modifiers
+
+| Modifier | Trigger | Inserted | Closed by |
+|----------|---------|----------|-----------|
+| *(default)* | `{` | `{name}` | `}` |
+| `.double` | `{{` | `{{name}}` | `}}` |
+| `.hash` | `#` | `#name` | space |
+| `.at` | `@` | `@name` | space |
+| `.dollar` | `${` | `${name}` | `}` |
+| `.percent` | `%` | `%name%` | `%` |
+
+```html
+<textarea x-placeholders.double="name, email, company"></textarea>
+<textarea x-placeholders.hash="name, email, company"></textarea>
+<textarea x-placeholders.at="name, email, company"></textarea>
+<textarea x-placeholders.dollar="name, email, company"></textarea>
+<textarea x-placeholders.percent="name, email, company"></textarea>
+```
+
+**Livewire** — pass a wire property name (array) instead of an inline list:
+
+```php
+public array $tokens = ['name', 'email', 'company'];
+```
+
+```html
+<textarea wire:placeholders="tokens"></textarea>
+<textarea wire:placeholders.double="tokens"></textarea>
+<textarea wire:placeholders.hash="tokens"></textarea>
+<textarea wire:placeholders.at="tokens"></textarea>
+<textarea wire:placeholders.dollar="tokens"></textarea>
+<textarea wire:placeholders.percent="tokens"></textarea>
 ```
 
 ---
