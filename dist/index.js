@@ -1,332 +1,386 @@
-const N = (s) => {
-  var p, E;
-  const i = (p = s.tagName) == null ? void 0 : p.toUpperCase();
-  return i === "INPUT" || i === "TEXTAREA" || s.isContentEditable ? s : s.querySelector("input, textarea, [contenteditable]") || ((E = s.parentElement) == null ? void 0 : E.querySelector("input, textarea, [contenteditable]")) || s;
-}, O = (s) => s.split(",").map((i) => i.trim()).filter(Boolean);
-function W(s) {
+var O = Object.defineProperty;
+var _ = (s, n, r) => n in s ? O(s, n, { enumerable: !0, configurable: !0, writable: !0, value: r }) : s[n] = r;
+var j = (s, n, r) => _(s, typeof n != "symbol" ? n + "" : n, r);
+const W = (s) => {
+  var r, o;
+  const n = (r = s.tagName) == null ? void 0 : r.toUpperCase();
+  return n === "INPUT" || n === "TEXTAREA" || s.isContentEditable ? s : s.querySelector("input, textarea, [contenteditable]") || ((o = s.parentElement) == null ? void 0 : o.querySelector("input, textarea, [contenteditable]")) || s;
+}, F = (s) => s.split(",").map((n) => n.trim()).filter(Boolean);
+function D(s) {
   s.directive(
     "placeholders",
-    (i, { expression: p }, { effect: E }) => {
-      const S = O(p);
-      let c = null, h = !1, e = "";
-      const t = () => N(i), w = (r) => {
-        var v;
-        const f = Object.getOwnPropertyDescriptor(
+    (n, { expression: r }, { effect: o }) => {
+      const m = F(r);
+      let c = null, g = !1, e = "";
+      const t = () => W(n), b = (i) => {
+        var h;
+        const w = Object.getOwnPropertyDescriptor(
           window.HTMLTextAreaElement.prototype,
           "value"
         );
-        return ((v = f == null ? void 0 : f.get) == null ? void 0 : v.call(r)) ?? "";
-      }, g = (r, f) => {
+        return ((h = w == null ? void 0 : w.get) == null ? void 0 : h.call(i)) ?? "";
+      }, E = (i, w) => {
         var x;
-        const v = Object.getOwnPropertyDescriptor(
+        const h = Object.getOwnPropertyDescriptor(
           window.HTMLTextAreaElement.prototype,
           "value"
         );
-        (x = v == null ? void 0 : v.set) == null || x.call(r, f);
-      }, C = () => {
-        var v;
-        const r = t();
-        return ((v = r.tagName) == null ? void 0 : v.toUpperCase()) === "TEXTAREA" ? w(r) : r.isContentEditable ? r.innerText : r.value;
-      }, $ = (r) => {
+        (x = h == null ? void 0 : h.set) == null || x.call(i, w);
+      }, $ = () => {
+        var h;
+        const i = t();
+        return ((h = i.tagName) == null ? void 0 : h.toUpperCase()) === "TEXTAREA" ? b(i) : i.isContentEditable ? i.innerText : i.value;
+      }, S = (i) => {
         var x;
-        const f = t();
-        ((x = f.tagName) == null ? void 0 : x.toUpperCase()) === "TEXTAREA" ? g(f, r) : f.isContentEditable ? f.innerText = r : f.value = r;
-      }, l = () => t().selectionStart ?? 0, o = (r) => {
-        var v;
-        const f = t();
-        (v = f.setSelectionRange) == null || v.call(f, r, r);
-      }, b = () => e ? S.filter(
-        (r) => r.toLowerCase().includes(e.toLowerCase())
-      ) : S, d = () => {
+        const w = t();
+        ((x = w.tagName) == null ? void 0 : x.toUpperCase()) === "TEXTAREA" ? E(w, i) : w.isContentEditable ? w.innerText = i : w.value = i;
+      }, p = () => t().selectionStart ?? 0, l = (i) => {
+        var h;
+        const w = t();
+        (h = w.setSelectionRange) == null || h.call(w, i, i);
+      }, C = () => e ? m.filter(
+        (i) => i.toLowerCase().includes(e.toLowerCase())
+      ) : m, v = () => {
         c && (c.style.display = "block");
       }, L = () => {
         c && (c.style.display = "none");
-      }, a = () => {
+      }, u = () => {
         if (!c) return;
         c.innerHTML = "";
-        const r = b();
-        if (!r.length) {
+        const i = C();
+        if (!i.length) {
           L();
           return;
         }
-        r.forEach((f) => {
-          const v = document.createElement("div");
-          v.textContent = `{${f}}`, v.className = "px-2 py-1 cursor-pointer hover:bg-zinc-100 dark:hover:bg-zinc-700", v.addEventListener("mousedown", (x) => {
-            x.preventDefault(), y(f);
-          }), c.appendChild(v);
-        }), d();
-      }, u = () => {
-        h = !1, e = "", L();
-      }, n = () => {
-        h = !0, a();
-      }, m = () => {
-        const r = C(), f = l(), v = r.slice(0, f), x = v.lastIndexOf("{"), V = v.lastIndexOf("}");
-        if (x === -1 || V > x) {
-          u();
+        i.forEach((w) => {
+          const h = document.createElement("div");
+          h.textContent = `{${w}}`, h.className = "px-2 py-1 cursor-pointer hover:bg-zinc-100 dark:hover:bg-zinc-700", h.addEventListener("mousedown", (x) => {
+            x.preventDefault(), y(w);
+          }), c.appendChild(h);
+        }), v();
+      }, d = () => {
+        g = !1, e = "", L();
+      }, a = () => {
+        g = !0, u();
+      }, f = () => {
+        const i = $(), w = p(), h = i.slice(0, w), x = h.lastIndexOf("{"), N = h.lastIndexOf("}");
+        if (x === -1 || N > x) {
+          d();
           return;
         }
-        e = v.slice(x + 1), n();
-      }, y = (r) => {
-        const f = t(), v = f.selectionStart ?? 0, x = C(), j = x.slice(0, v).lastIndexOf("{");
-        if (j === -1) return;
-        const A = x.slice(0, j), I = x.slice(v), z = `${A}{${r}}${I}`;
-        $(z), o(A.length + r.length + 2), f.dispatchEvent(new Event("input", { bubbles: !0 })), u();
-      }, P = (r) => {
-        h && r.key === "Escape" && (r.preventDefault(), u());
-      }, M = () => m(), T = () => m(), U = () => u(), R = () => {
+        e = h.slice(x + 1), a();
+      }, y = (i) => {
+        const w = t(), h = w.selectionStart ?? 0, x = $(), U = x.slice(0, h).lastIndexOf("{");
+        if (U === -1) return;
+        const I = x.slice(0, U), A = x.slice(h), z = `${I}{${i}}${A}`;
+        S(z), l(I.length + i.length + 2), w.dispatchEvent(new Event("input", { bubbles: !0 })), d();
+      }, P = (i) => {
+        g && i.key === "Escape" && (i.preventDefault(), d());
+      }, M = () => f(), T = () => f(), V = () => d(), B = () => {
         c = document.createElement("div"), c.className = "absolute z-50 mt-1 border bg-white dark:bg-zinc-800 text-sm shadow w-40", c.style.display = "none";
-        const r = t();
-        r.parentElement.style.position = "relative", r.parentElement.appendChild(c);
-      }, B = () => {
-        const r = t();
-        r.removeEventListener("input", M), r.removeEventListener("click", T), r.removeEventListener("keydown", P), r.removeEventListener("blur", U), c == null || c.remove();
+        const i = t();
+        i.parentElement.style.position = "relative", i.parentElement.appendChild(c);
+      }, R = () => {
+        const i = t();
+        i.removeEventListener("input", M), i.removeEventListener("click", T), i.removeEventListener("keydown", P), i.removeEventListener("blur", V), c == null || c.remove();
       };
-      R();
+      B();
       const k = t();
-      k.addEventListener("input", M), k.addEventListener("click", T), k.addEventListener("keydown", P), k.addEventListener("blur", U), E(() => B);
+      k.addEventListener("input", M), k.addEventListener("click", T), k.addEventListener("keydown", P), k.addEventListener("blur", V), o(() => R);
     }
   );
 }
-const F = (s) => {
-  var p, E;
-  const i = (p = s.tagName) == null ? void 0 : p.toUpperCase();
-  return i === "INPUT" || i === "TEXTAREA" || s.isContentEditable ? s : s.querySelector("input, textarea, [contenteditable]") || ((E = s.parentElement) == null ? void 0 : E.querySelector("input, textarea, [contenteditable]")) || s;
-}, _ = (s) => s.split(",").map((i) => i.trim()).filter(Boolean);
-function Z(s) {
+const q = (s) => {
+  var r, o;
+  const n = (r = s.tagName) == null ? void 0 : r.toUpperCase();
+  return n === "INPUT" || n === "TEXTAREA" || s.isContentEditable ? s : s.querySelector("input, textarea, [contenteditable]") || ((o = s.parentElement) == null ? void 0 : o.querySelector("input, textarea, [contenteditable]")) || s;
+}, Z = (s) => s.split(",").map((n) => n.trim()).filter(Boolean);
+function X(s) {
   s.directive(
     "email-mask",
-    (i, { expression: p }, { effect: E }) => {
-      const S = new Set(_(p)), c = /^\s*\{([\w]+)\}\s*$/, h = /^\s*\{([\w]+)\}\s*<\s*\{([\w]+)\}\s*>\s*$/, e = F(i), t = (l) => S.has(l), w = (l) => {
-        const o = l.match(c);
-        if (o) {
-          const a = o[1];
-          return t(a) ? `{${a}}` : null;
+    (n, { expression: r }, { effect: o }) => {
+      const m = new Set(Z(r)), c = /^\s*\{([\w]+)\}\s*$/, g = /^\s*\{([\w]+)\}\s*<\s*\{([\w]+)\}\s*>\s*$/, e = q(n), t = (p) => m.has(p), b = (p) => {
+        const l = p.match(c);
+        if (l) {
+          const u = l[1];
+          return t(u) ? `{${u}}` : null;
         }
-        const b = l.match(h);
-        if (!b) return null;
-        const d = b[1], L = b[2];
-        return !t(d) || !t(L) ? null : `{${d}}<{${L}}>`;
-      }, g = () => {
-        const l = e.value.trim();
-        if (l === "") {
+        const C = p.match(g);
+        if (!C) return null;
+        const v = C[1], L = C[2];
+        return !t(v) || !t(L) ? null : `{${v}}<{${L}}>`;
+      }, E = () => {
+        const p = e.value.trim();
+        if (p === "") {
           e.setCustomValidity("");
           return;
         }
-        if (w(l) !== null) {
+        if (b(p) !== null) {
           e.setCustomValidity("");
           return;
         }
         e.setCustomValidity("Use {field} or {name}<{email}> format.");
-      }, C = () => {
-        const l = e.value.trim();
-        if (l === "") {
+      }, $ = () => {
+        const p = e.value.trim();
+        if (p === "") {
           e.setCustomValidity("");
           return;
         }
-        const o = w(l);
-        if (o === null) {
-          g();
+        const l = b(p);
+        if (l === null) {
+          E();
           return;
         }
-        o !== e.value && (e.value = o, e.dispatchEvent(new Event("input", { bubbles: !0 }))), e.setCustomValidity("");
-      }, $ = () => g();
-      e.addEventListener("input", $), e.addEventListener("blur", C), E(() => () => {
-        e.removeEventListener("input", $), e.removeEventListener("blur", C);
-      });
-    }
-  );
-}
-function D(s) {
-  s.directive(
-    "slug",
-    (i, { expression: p, modifiers: E }, { evaluate: S, cleanup: c }) => {
-      const h = E[0] ?? "-", e = i, t = (d) => d.toString().toLowerCase().trim().replace(/[\s\W-]+/g, h).replace(new RegExp(`^${h}+|${h}+$`, "g"), "").replace(new RegExp(`${h}{2,}`, "g"), h), w = p.trim().split(",").map((d) => d.trim());
-      let g = "";
-      const C = () => t(
-        w.map((d) => S(d)).filter(Boolean).join(" ")
-      ), $ = C();
-      !e.value && $ && (g = $, e.value = g, e.dispatchEvent(new Event("input", { bubbles: !0 })));
-      const l = S("$watch"), o = w.map(
-        (d) => l(d, () => {
-          (!e.value || e.value === g) && (g = C(), e.value = g, e.dispatchEvent(new Event("input", { bubbles: !0 })));
-        })
-      ), b = () => {
-        const d = e.selectionStart ?? 0, L = e.value, a = t(L);
-        if (L !== a) {
-          e.value = a;
-          const u = Math.min(d, a.length);
-          e.setSelectionRange(u, u);
-        }
-      };
-      e.addEventListener("blur", b), c(() => {
-        o.forEach((d) => d()), e.removeEventListener("blur", b);
-      });
-    }
-  );
-}
-function q(s) {
-  s.directive("slug", ({ el: i, directive: p, component: E, cleanup: S }) => {
-    const c = p.modifiers.length > 0 ? p.modifiers[0] : "-", h = p.expression.trim().split(",").map((o) => o.trim()), e = i, t = (o) => o.toString().toLowerCase().trim().replace(/[\s\W-]+/g, c).replace(new RegExp(`^${c}+|${c}+$`, "g"), "").replace(new RegExp(`${c}{2,}`, "g"), c);
-    let w = "";
-    const g = () => t(
-      h.map((o) => E.$wire.get(o)).filter(Boolean).join(" ")
-    ), C = g();
-    !e.value && C && (w = C, e.value = w, e.dispatchEvent(new Event("input", { bubbles: !0 })));
-    const $ = h.map(
-      (o) => E.$wire.$watch(o, () => {
-        (!e.value || e.value === w) && (w = g(), e.value = w, e.dispatchEvent(new Event("input", { bubbles: !0 })));
-      })
-    ), l = () => {
-      const o = e.selectionStart ?? 0, b = e.value, d = t(b);
-      if (b !== d) {
-        e.value = d;
-        const L = Math.min(o, d.length);
-        e.setSelectionRange(L, L);
-      }
-    };
-    e.addEventListener("blur", l), S(() => {
-      $.forEach((o) => o()), e.removeEventListener("blur", l);
-    });
-  });
-}
-function X(s) {
-  s.directive(
-    "case",
-    (i, { expression: p, modifiers: E }, { evaluate: S, cleanup: c }) => {
-      const h = E[0] ?? "camel", e = E[1] === "underscore" ? "_" : "-", t = i, w = (n) => n.replace(/([a-z])([A-Z])/g, "$1 $2").replace(/([A-Z]+)([A-Z][a-z])/g, "$1 $2").split(/[\s\-_./]+/).filter(Boolean), g = (n) => n.charAt(0).toUpperCase() + n.slice(1).toLowerCase(), C = (n) => {
-        const m = e;
-        return n.toString().toLowerCase().trim().replace(/[\s\W-]+/g, m).replace(new RegExp(`^${m}+|${m}+$`, "g"), "").replace(new RegExp(`${m}{2,}`, "g"), m);
-      }, $ = (n) => {
-        const m = w(n.toString().trim());
-        switch (h) {
-          case "slug":
-            return C(n);
-          case "camel":
-            return m.map((y, P) => P === 0 ? y.toLowerCase() : g(y)).join("");
-          case "pascal":
-            return m.map(g).join("");
-          case "snake":
-            return m.map((y) => y.toLowerCase()).join("_");
-          case "constant":
-            return m.map((y) => y.toUpperCase()).join("_");
-          case "title":
-            return m.map(g).join(" ");
-          case "dot":
-            return m.map((y) => y.toLowerCase()).join(".");
-          case "kebab":
-            return m.map((y) => y.toLowerCase()).join("-");
-          case "lower":
-            return n.toLowerCase().trim();
-          case "upper":
-            return n.toUpperCase().trim();
-          default:
-            return n;
-        }
-      }, l = p.trim().split(",").map((n) => n.trim());
-      let o = "";
-      const b = () => $(
-        l.map((n) => S(n)).filter(Boolean).join(" ")
-      ), d = b();
-      !t.value && d && (o = d, t.value = o, t.dispatchEvent(new Event("input", { bubbles: !0 })));
-      const L = S("$watch"), a = l.map(
-        (n) => L(n, () => {
-          (!t.value || t.value === o) && (o = b(), t.value = o, t.dispatchEvent(new Event("input", { bubbles: !0 })));
-        })
-      ), u = () => {
-        const n = t.selectionStart ?? 0, m = t.value, y = $(m);
-        if (m !== y) {
-          t.value = y;
-          const P = Math.min(n, y.length);
-          t.setSelectionRange(P, P);
-        }
-      };
-      t.addEventListener("blur", u), c(() => {
-        a.forEach((n) => n()), t.removeEventListener("blur", u);
+        l !== e.value && (e.value = l, e.dispatchEvent(new Event("input", { bubbles: !0 }))), e.setCustomValidity("");
+      }, S = () => E();
+      e.addEventListener("input", S), e.addEventListener("blur", $), o(() => () => {
+        e.removeEventListener("input", S), e.removeEventListener("blur", $);
       });
     }
   );
 }
 function H(s) {
-  s.directive("case", ({ el: i, directive: p, component: E, cleanup: S }) => {
-    const c = p.modifiers[0] ?? "camel", h = p.modifiers[1] === "underscore" ? "_" : "-", e = p.expression.trim().split(",").map((a) => a.trim()), t = i, w = (a) => a.replace(/([a-z])([A-Z])/g, "$1 $2").replace(/([A-Z]+)([A-Z][a-z])/g, "$1 $2").split(/[\s\-_./]+/).filter(Boolean), g = (a) => a.charAt(0).toUpperCase() + a.slice(1).toLowerCase(), C = (a) => {
-      const u = h;
-      return a.toString().toLowerCase().trim().replace(/[\s\W-]+/g, u).replace(new RegExp(`^${u}+|${u}+$`, "g"), "").replace(new RegExp(`${u}{2,}`, "g"), u);
-    }, $ = (a) => {
-      const u = w(a.toString().trim());
-      switch (c) {
-        case "slug":
-          return C(a);
-        case "camel":
-          return u.map((n, m) => m === 0 ? n.toLowerCase() : g(n)).join("");
-        case "pascal":
-          return u.map(g).join("");
-        case "snake":
-          return u.map((n) => n.toLowerCase()).join("_");
-        case "constant":
-          return u.map((n) => n.toUpperCase()).join("_");
-        case "title":
-          return u.map(g).join(" ");
-        case "dot":
-          return u.map((n) => n.toLowerCase()).join(".");
-        case "kebab":
-          return u.map((n) => n.toLowerCase()).join("-");
-        case "lower":
-          return a.toLowerCase().trim();
-        case "upper":
-          return a.toUpperCase().trim();
-        default:
-          return a;
-      }
-    };
-    let l = "";
-    const o = () => $(
-      e.map((a) => E.$wire.get(a)).filter(Boolean).join(" ")
-    ), b = o();
-    !t.value && b && (l = b, t.value = l, t.dispatchEvent(new Event("input", { bubbles: !0 })));
-    const d = e.map(
-      (a) => E.$wire.$watch(a, () => {
-        (!t.value || t.value === l) && (l = o(), t.value = l, t.dispatchEvent(new Event("input", { bubbles: !0 })));
+  s.directive(
+    "slug",
+    (n, { expression: r, modifiers: o }, { evaluate: m, cleanup: c }) => {
+      const g = o[0] ?? "-", e = n, t = (v) => v.toString().toLowerCase().trim().replace(/[\s\W-]+/g, g).replace(new RegExp(`^${g}+|${g}+$`, "g"), "").replace(new RegExp(`${g}{2,}`, "g"), g), b = r.trim().split(",").map((v) => v.trim());
+      let E = "";
+      const $ = () => t(
+        b.map((v) => m(v)).filter(Boolean).join(" ")
+      ), S = $();
+      !e.value && S && (E = S, e.value = E, e.dispatchEvent(new Event("input", { bubbles: !0 })));
+      const p = m("$watch"), l = b.map(
+        (v) => p(v, () => {
+          (!e.value || e.value === E) && (E = $(), e.value = E, e.dispatchEvent(new Event("input", { bubbles: !0 })));
+        })
+      ), C = () => {
+        const v = e.selectionStart ?? 0, L = e.value, u = t(L);
+        if (L !== u) {
+          e.value = u;
+          const d = Math.min(v, u.length);
+          e.setSelectionRange(d, d);
+        }
+      };
+      e.addEventListener("blur", C), c(() => {
+        l.forEach((v) => v()), e.removeEventListener("blur", C);
+      });
+    }
+  );
+}
+function J(s) {
+  s.directive("slug", ({ el: n, directive: r, component: o, cleanup: m }) => {
+    const c = r.modifiers.length > 0 ? r.modifiers[0] : "-", g = r.expression.trim().split(",").map((l) => l.trim()), e = n, t = (l) => l.toString().toLowerCase().trim().replace(/[\s\W-]+/g, c).replace(new RegExp(`^${c}+|${c}+$`, "g"), "").replace(new RegExp(`${c}{2,}`, "g"), c);
+    let b = "";
+    const E = () => t(
+      g.map((l) => o.$wire.get(l)).filter(Boolean).join(" ")
+    ), $ = E();
+    !e.value && $ && (b = $, e.value = b, e.dispatchEvent(new Event("input", { bubbles: !0 })));
+    const S = g.map(
+      (l) => o.$wire.$watch(l, () => {
+        (!e.value || e.value === b) && (b = E(), e.value = b, e.dispatchEvent(new Event("input", { bubbles: !0 })));
       })
-    ), L = () => {
-      const a = t.selectionStart ?? 0, u = t.value, n = $(u);
-      if (u !== n) {
-        t.value = n;
-        const m = Math.min(a, n.length);
-        t.setSelectionRange(m, m);
+    ), p = () => {
+      const l = e.selectionStart ?? 0, C = e.value, v = t(C);
+      if (C !== v) {
+        e.value = v;
+        const L = Math.min(l, v.length);
+        e.setSelectionRange(L, L);
       }
     };
-    t.addEventListener("blur", L), S(() => {
-      d.forEach((a) => a()), t.removeEventListener("blur", L);
+    e.addEventListener("blur", p), m(() => {
+      S.forEach((l) => l()), e.removeEventListener("blur", p);
     });
   });
 }
 function K(s) {
-  for (const { name: i, value: p } of Array.from(s.attributes))
-    if (/^wire:(click|submit|keydown|keyup|change|input)/.test(i))
-      return p.replace(/\(.*$/, "").trim();
-  return "";
+  s.directive(
+    "case",
+    (n, { expression: r, modifiers: o }, { evaluate: m, cleanup: c }) => {
+      const g = o[0] ?? "camel", e = o[1] === "underscore" ? "_" : "-", t = n, b = (a) => a.replace(/([a-z])([A-Z])/g, "$1 $2").replace(/([A-Z]+)([A-Z][a-z])/g, "$1 $2").split(/[\s\-_./]+/).filter(Boolean), E = (a) => a.charAt(0).toUpperCase() + a.slice(1).toLowerCase(), $ = (a) => {
+        const f = e;
+        return a.toString().toLowerCase().trim().replace(/[\s\W-]+/g, f).replace(new RegExp(`^${f}+|${f}+$`, "g"), "").replace(new RegExp(`${f}{2,}`, "g"), f);
+      }, S = (a) => {
+        const f = b(a.toString().trim());
+        switch (g) {
+          case "slug":
+            return $(a);
+          case "camel":
+            return f.map((y, P) => P === 0 ? y.toLowerCase() : E(y)).join("");
+          case "pascal":
+            return f.map(E).join("");
+          case "snake":
+            return f.map((y) => y.toLowerCase()).join("_");
+          case "constant":
+            return f.map((y) => y.toUpperCase()).join("_");
+          case "title":
+            return f.map(E).join(" ");
+          case "dot":
+            return f.map((y) => y.toLowerCase()).join(".");
+          case "kebab":
+            return f.map((y) => y.toLowerCase()).join("-");
+          case "lower":
+            return a.toLowerCase().trim();
+          case "upper":
+            return a.toUpperCase().trim();
+          default:
+            return a;
+        }
+      }, p = r.trim().split(",").map((a) => a.trim());
+      let l = "";
+      const C = () => S(
+        p.map((a) => m(a)).filter(Boolean).join(" ")
+      ), v = C();
+      !t.value && v && (l = v, t.value = l, t.dispatchEvent(new Event("input", { bubbles: !0 })));
+      const L = m("$watch"), u = p.map(
+        (a) => L(a, () => {
+          (!t.value || t.value === l) && (l = C(), t.value = l, t.dispatchEvent(new Event("input", { bubbles: !0 })));
+        })
+      ), d = () => {
+        const a = t.selectionStart ?? 0, f = t.value, y = S(f);
+        if (f !== y) {
+          t.value = y;
+          const P = Math.min(a, y.length);
+          t.setSelectionRange(P, P);
+        }
+      };
+      t.addEventListener("blur", d), c(() => {
+        u.forEach((a) => a()), t.removeEventListener("blur", d);
+      });
+    }
+  );
 }
-function G(s, i) {
-  s.directive("after", ({ el: p, directive: E, component: S, cleanup: c }) => {
-    const h = E.modifiers.includes("finish"), e = E.expression.trim(), t = e.indexOf(","), w = t !== -1 ? e.slice(0, t).trim() : K(p), g = t !== -1 ? e.slice(t + 1).trim() : e;
-    if (!w || !g) return;
-    const C = S.$wire.intercept(w, ({ onSuccess: $, onFinish: l }) => {
-      (h ? l : $)(() => i.evaluate(p, g));
+function G(s) {
+  s.directive("case", ({ el: n, directive: r, component: o, cleanup: m }) => {
+    const c = r.modifiers[0] ?? "camel", g = r.modifiers[1] === "underscore" ? "_" : "-", e = r.expression.trim().split(",").map((u) => u.trim()), t = n, b = (u) => u.replace(/([a-z])([A-Z])/g, "$1 $2").replace(/([A-Z]+)([A-Z][a-z])/g, "$1 $2").split(/[\s\-_./]+/).filter(Boolean), E = (u) => u.charAt(0).toUpperCase() + u.slice(1).toLowerCase(), $ = (u) => {
+      const d = g;
+      return u.toString().toLowerCase().trim().replace(/[\s\W-]+/g, d).replace(new RegExp(`^${d}+|${d}+$`, "g"), "").replace(new RegExp(`${d}{2,}`, "g"), d);
+    }, S = (u) => {
+      const d = b(u.toString().trim());
+      switch (c) {
+        case "slug":
+          return $(u);
+        case "camel":
+          return d.map((a, f) => f === 0 ? a.toLowerCase() : E(a)).join("");
+        case "pascal":
+          return d.map(E).join("");
+        case "snake":
+          return d.map((a) => a.toLowerCase()).join("_");
+        case "constant":
+          return d.map((a) => a.toUpperCase()).join("_");
+        case "title":
+          return d.map(E).join(" ");
+        case "dot":
+          return d.map((a) => a.toLowerCase()).join(".");
+        case "kebab":
+          return d.map((a) => a.toLowerCase()).join("-");
+        case "lower":
+          return u.toLowerCase().trim();
+        case "upper":
+          return u.toUpperCase().trim();
+        default:
+          return u;
+      }
+    };
+    let p = "";
+    const l = () => S(
+      e.map((u) => o.$wire.get(u)).filter(Boolean).join(" ")
+    ), C = l();
+    !t.value && C && (p = C, t.value = p, t.dispatchEvent(new Event("input", { bubbles: !0 })));
+    const v = e.map(
+      (u) => o.$wire.$watch(u, () => {
+        (!t.value || t.value === p) && (p = l(), t.value = p, t.dispatchEvent(new Event("input", { bubbles: !0 })));
+      })
+    ), L = () => {
+      const u = t.selectionStart ?? 0, d = t.value, a = S(d);
+      if (d !== a) {
+        t.value = a;
+        const f = Math.min(u, a.length);
+        t.setSelectionRange(f, f);
+      }
+    };
+    t.addEventListener("blur", L), m(() => {
+      v.forEach((u) => u()), t.removeEventListener("blur", L);
     });
-    c(C);
   });
 }
-function J(s, i) {
-  W(i), Z(i), D(i), X(i), q(s), H(s), G(s, i);
+function Q(s) {
+  for (const { name: n, value: r } of Array.from(s.attributes))
+    if (/^wire:(click|submit|keydown|keyup|change|input)/.test(n))
+      return r.replace(/\(.*$/, "").trim();
+  return "";
+}
+function Y(s, n) {
+  s.directive("after", ({ el: r, directive: o, component: m, cleanup: c }) => {
+    const g = o.modifiers.includes("finish"), e = o.expression.trim(), t = e.indexOf(","), b = t !== -1 ? e.slice(0, t).trim() : Q(r), E = t !== -1 ? e.slice(t + 1).trim() : e;
+    if (!b || !E) return;
+    const $ = m.$wire.intercept(b, ({ onSuccess: S, onFinish: p }) => {
+      (g ? p : S)(() => n.evaluate(r, E));
+    });
+    c($);
+  });
+}
+function ee(s) {
+  s.magic("memo", () => {
+    let n;
+    return s.interceptor((r, o, m, c) => {
+      const g = n || `_x_${c}`, e = sessionStorage.getItem(g);
+      return m(e !== null ? JSON.parse(e) : r), s.effect(() => {
+        sessionStorage.setItem(g, JSON.stringify(o()));
+      }), r;
+    }, (r) => {
+      r.as = (o) => (n = o, r);
+    });
+  });
+}
+class te {
+  constructor(n) {
+    j(this, "storeName", "keyvaluepairs");
+    j(this, "dbPromise");
+    this.dbPromise = new Promise((r) => {
+      const o = indexedDB.open(n, 1);
+      o.onupgradeneeded = () => o.result.createObjectStore(this.storeName), o.onsuccess = () => r(o.result);
+    });
+  }
+  async get(n) {
+    const r = await this.dbPromise;
+    return new Promise((o) => {
+      const m = r.transaction(this.storeName).objectStore(this.storeName).get(n);
+      m.onsuccess = () => o(m.result);
+    });
+  }
+  async set(n, r) {
+    (await this.dbPromise).transaction(this.storeName, "readwrite").objectStore(this.storeName).put(r, n);
+  }
+}
+function ne(s) {
+  const n = new te("AlpineVault");
+  s.magic("vault", () => {
+    let r;
+    return s.interceptor((o, m, c, g) => {
+      const e = r || `_x_${g}`;
+      return n.get(e).then((t) => {
+        t != null && c(t);
+      }), s.effect(() => {
+        n.set(e, m());
+      }), o;
+    }, (o) => {
+      o.as = (m) => (r = m, o);
+    });
+  });
+}
+function re(s, n) {
+  D(n), X(n), H(n), K(n), ee(n), ne(n), J(s), G(s), Y(s, n);
 }
 export {
-  G as registerAfterLivewire,
-  X as registerCaseAlpine,
-  H as registerCaseLivewire,
-  J as registerDirectives,
-  Z as registerEmailMask,
-  W as registerPlaceholders,
-  D as registerSlugAlpine,
-  q as registerSlugLivewire
+  Y as registerAfterLivewire,
+  K as registerCaseAlpine,
+  G as registerCaseLivewire,
+  re as registerDirectives,
+  X as registerEmailMask,
+  ee as registerMemo,
+  D as registerPlaceholders,
+  H as registerSlugAlpine,
+  J as registerSlugLivewire,
+  ne as registerVault
 };
 //# sourceMappingURL=index.js.map
