@@ -211,6 +211,48 @@ This also handles actions with arguments in the expression:
 
 ---
 
+### `$memo`
+
+Persists a value to `sessionStorage` — survives page refreshes within the same tab, cleared when the tab closes.
+
+```html
+<div x-data="{ name: $memo('') }">
+    <input x-model="name" placeholder="Name">
+</div>
+```
+
+Use `.as()` to set an explicit storage key:
+
+```html
+<div x-data="{ name: $memo('').as('user-name') }">
+```
+
+---
+
+### `$vault`
+
+Persists a value to IndexedDB — survives full browser close/reopen. Suited for larger or long-lived data.
+
+```html
+<div x-data="{ items: $vault([]).as('my-items') }">
+    <ul>
+        <template x-for="item in items" :key="item">
+            <li x-text="item"></li>
+        </template>
+    </ul>
+</div>
+```
+
+Use `.as()` to set an explicit storage key:
+
+```html
+<div x-data="{ items: $vault([]).as('my-items') }">
+```
+
+> **Note:** IndexedDB reads are async. The initial value will be set on first render and updated once the stored value loads.
+
+---
+
 ## PHP Macros
 
 ### `$attributes->for(prefix)`
